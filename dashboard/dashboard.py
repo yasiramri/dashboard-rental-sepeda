@@ -6,18 +6,18 @@ import streamlit as st
 # Set style seaborn
 sns.set(style='dark')
 
-# Menyiapkan data day_df
+# Memasukan data day_df
 day_df = pd.read_csv("./day.csv")
 day_df.head()
 
-# Menghapus kolom yang tidak diperlukan
+# Menghapus kolom yang tidak digunakan
 drop_col = ['windspeed']
 
 for i in day_df.columns:
   if i in drop_col:
     day_df.drop(labels=i, axis=1, inplace=True)
 
-# Mengubah nama judul kolom
+# Mengganti nama judul kolom
 day_df.rename(columns={
     'dteday': 'dateday',
     'yr': 'year',
@@ -26,7 +26,7 @@ day_df.rename(columns={
     'cnt': 'count'
 }, inplace=True)
 
-# Mengubah angka menjadi keterangan
+# Mengganti angka menjadi keterangan(bulan, musim, hari, dan cuaca)
 day_df['month'] = day_df['month'].map({
     1: 'Jan', 2: 'Feb', 3: 'Mar', 4: 'Apr', 5: 'May', 6: 'Jun',
     7: 'Jul', 8: 'Aug', 9: 'Sep', 10: 'Oct', 11: 'Nov', 12: 'Dec'
@@ -45,33 +45,33 @@ day_df['weather_cond'] = day_df['weather_cond'].map({
 })
 
 
-# Menyiapkan daily_rent_df
+# Membuat daily_rent_df
 def create_daily_rent_df(df):
     daily_rent_df = df.groupby(by='dateday').agg({
         'count': 'sum'
     }).reset_index()
     return daily_rent_df
 
-# Menyiapkan daily_casual_rent_df
+# Membuat daily_casual_rent_df
 def create_daily_casual_rent_df(df):
     daily_casual_rent_df = df.groupby(by='dateday').agg({
         'casual': 'sum'
     }).reset_index()
     return daily_casual_rent_df
 
-# Menyiapkan daily_registered_rent_df
+# Membuat daily_registered_rent_df
 def create_daily_registered_rent_df(df):
     daily_registered_rent_df = df.groupby(by='dateday').agg({
         'registered': 'sum'
     }).reset_index()
     return daily_registered_rent_df
     
-# Menyiapkan season_rent_df
+# Membuat season_rent_df
 def create_season_rent_df(df):
     season_rent_df = df.groupby(by='season')[['registered', 'casual']].sum().reset_index()
     return season_rent_df
 
-# Menyiapkan monthly_rent_df
+# Membuat monthly_rent_df
 def create_monthly_rent_df(df):
     monthly_rent_df = df.groupby(by='month').agg({
         'count': 'sum'
@@ -83,28 +83,28 @@ def create_monthly_rent_df(df):
     monthly_rent_df = monthly_rent_df.reindex(ordered_months, fill_value=0)
     return monthly_rent_df
 
-# Menyiapkan weekday_rent_df
+# Membuat weekday_rent_df
 def create_weekday_rent_df(df):
     weekday_rent_df = df.groupby(by='weekday').agg({
         'count': 'sum'
     }).reset_index()
     return weekday_rent_df
 
-# Menyiapkan workingday_rent_df
+# Membuat workingday_rent_df
 def create_workingday_rent_df(df):
     workingday_rent_df = df.groupby(by='workingday').agg({
         'count': 'sum'
     }).reset_index()
     return workingday_rent_df
 
-# Menyiapkan holiday_rent_df
+# Membuat holiday_rent_df
 def create_holiday_rent_df(df):
     holiday_rent_df = df.groupby(by='holiday').agg({
         'count': 'sum'
     }).reset_index()
     return holiday_rent_df
 
-# Menyiapkan weather_rent_df
+# Membuat weather_rent_df
 def create_weather_rent_df(df):
     weather_rent_df = df.groupby(by='weather_cond').agg({
         'count': 'sum'
@@ -117,7 +117,7 @@ min_date = pd.to_datetime(day_df['dateday']).dt.date.min()
 max_date = pd.to_datetime(day_df['dateday']).dt.date.max()
  
 with st.sidebar:
-    st.image('/image/istockphoto-1252020132-170667a.jpg')
+    st.image('https://raw.githubusercontent.com/yasiramri/dashboard-rental-sepeda/main/image/istockphoto-1252020132-170667a.jpg?token=GHSAT0AAAAAACOPZZF43K2RCUAGNF3QFHDUZPG2KMQ')
     # Mengambil start_date & end_date dari date_input
     start_date, end_date = st.date_input(
         label='Rentang Waktu',
@@ -129,7 +129,7 @@ with st.sidebar:
 main_df = day_df[(day_df['dateday'] >= str(start_date)) & 
                 (day_df['dateday'] <= str(end_date))]
 
-# Menyiapkan berbagai dataframe
+# Membuat berbagai dataframe
 daily_rent_df = create_daily_rent_df(main_df)
 daily_casual_rent_df = create_daily_casual_rent_df(main_df)
 daily_registered_rent_df = create_daily_registered_rent_df(main_df)
@@ -297,4 +297,4 @@ axes[2].tick_params(axis='y', labelsize=10)
 plt.tight_layout()
 st.pyplot(fig)
 
-st.caption('Copyright (c) Afif Ramadhan 2023')
+st.caption('Copyright (c) Muhammad Yasir Amri 2024')
